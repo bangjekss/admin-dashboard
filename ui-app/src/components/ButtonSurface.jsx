@@ -25,6 +25,7 @@ function ButtonSurface({
 	text,
 	fontSize,
 	isLoading,
+	loader,
 	color,
 }) {
 	const styles = useStyles();
@@ -56,7 +57,7 @@ function ButtonSurface({
 				}}
 			>
 				{disabled && isLoading ? (
-					<Loader type="ThreeDots" color="white" height="auto" width={50} />
+					<Loader type={loader || "ThreeDots"} color="white" height="auto" width={50} />
 				) : (
 					<div className={styles.childButton} style={{ fontSize: fontSize ? fontSize : null }}>
 						{text}

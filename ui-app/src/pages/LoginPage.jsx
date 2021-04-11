@@ -5,19 +5,11 @@ import { accentColor, primaryColor, surfaceColor } from "../helpers";
 import { loginAction } from "../redux/actions";
 import { Link, Redirect } from "react-router-dom";
 import Swal from "sweetalert2";
-import {
-	ButtonAccent,
-	ButtonSurface,
-	InputForm,
-	InputGroupIcon,
-	InputToolTip,
-} from "../components";
+import { ButtonAccent, ButtonSurface, InputForm, InputGroupIcon, InputToolTip } from "../components";
 
 const LoginPage = () => {
 	const dispatch = useDispatch();
-	const { isLoading, isLogin, roleId } = useSelector(
-		(state) => state.authReducer
-	);
+	const { isLoading, isLogin, roleId } = useSelector((state) => state.authReducer);
 	const [user, setUser] = useState("");
 	const [password, setPassword] = useState("");
 	const [showPassword, setShowPassword] = useState(false);
@@ -73,11 +65,7 @@ const LoginPage = () => {
 				>
 					<div>
 						<Link to="/">
-							<img
-								src="https://i.imgur.com/dbtNOT2.png"
-								alt="file_err"
-								width="450"
-							/>
+							<img src="https://i.imgur.com/dbtNOT2.png" alt="file_err" width="450" />
 						</Link>
 					</div>
 				</div>
@@ -117,11 +105,7 @@ const LoginPage = () => {
 								/>
 							</div>
 							<div>
-								<ButtonSurface
-									disabled={isLoading}
-									text="Login"
-									onClick={handleLoginBtn}
-								/>
+								<ButtonSurface disabled={isLoading} text="Login" onClick={handleLoginBtn} isLoading={true} />
 							</div>
 						</Form>
 					</div>

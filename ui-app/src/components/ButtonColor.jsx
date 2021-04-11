@@ -71,16 +71,9 @@ function ButtonAccent({
 
 const useStyles = makeStyles({
 	button: {
-		// backgroundColor: accentColor,
 		borderWidth: 0,
 		paddingBlock: 10,
 		borderRadius: 5,
-		"&:hover": {
-			backgroundColor: secondAccentColor,
-		},
-		"&:focus": {
-			backgroundColor: focusColor,
-		},
 	},
 	childButton: {
 		color: "white",

@@ -112,7 +112,7 @@ const NewProductPage = () => {
 			stock,
 		};
 		dispatch(addNewProduct(payload));
-		// setIsFinished(true);
+		setIsFinished(true);
 	};
 
 	console.log(images);

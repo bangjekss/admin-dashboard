@@ -1,9 +1,10 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { Link } from "react-router-dom";
-import { ButtonAccent, ButtonSurface, InputGroupIcon, LoaderPage, AdminTable } from "../components";
+import Swal from "sweetalert2";
+import { ButtonAccent, ButtonSurface, InputGroupIcon, LoaderPage, AdminTable, ButtonColor } from "../components";
 import { apiUrl } from "../helpers";
-import { getProductsAdmin } from "../redux/actions";
+import { getProductsAdmin, deleteMultipleProduct } from "../redux/actions";
 
 const columnData = [
 	{
@@ -94,18 +95,49 @@ const AdminProductPage = () => {
 	const { products, isLoading } = useSelector((state) => state.adminReducer);
 	const isLoadingAuth = useSelector((state) => state.authReducer.isLoading);
 	const [rowData, setRowData] = useState([]);
-	const [toggleStock, setToggleStock] = useState(false);
+	const [toggleDelete, setToggleDelete] = useState(false);
 	const [editIndex, setEditIndex] = useState([]);
 	const [inventory, setInventory] = useState([]);
+	const [check, setCheck] = useState([]);
 
 	useEffect(() => {
 		dispatch(getProductsAdmin());
-		setRowData(products);
 	}, []);
 
 	if (!products) return <LoaderPage />;
 	if (isLoading) return <LoaderPage />;
 	if (isLoadingAuth) return <LoaderPage />;
+
+	const handleCheck = (e, productId) => {
+		console.log(e.target.checked, productId);
+		let updateCheck = check;
+		if (e.target.checked) {
+			updateCheck.push(productId);
+		} else {
+			const idx = updateCheck.findIndex((value) => value === productId);
+			updateCheck.splice(idx, 1);
+		}
+		setCheck(updateCheck);
+		console.log(check);
+	};
+	console.log(check);
+	const handleDeleteBtn = () => {
+		Swal.fire({
+			title: "Are you sure?",
+			text: "You won't be able to revert this!",
+			icon: "warning",
+			showCancelButton: true,
+			confirmButtonColor: "#3085d6",
+			cancelButtonColor: "#d33",
+			confirmButtonText: "Yes, delete it!",
+		}).then((result) => {
+			if (result.isConfirmed) {
+				dispatch(deleteMultipleProduct(check));
+			}
+		});
+		setToggleDelete((prev) => !prev);
+		setCheck([]);
+	};
 
 	return (
 		<div style={{ paddingInline: 50, paddingBlock: 30 }}>
@@ -123,21 +155,29 @@ const AdminProductPage = () => {
 					/>
 				</div>
 				<div>
-					<Link to="/admin/add-product">
-						<ButtonSurface text="+ New Product" />
-					</Link>
+					<div className="d-flex">
+						<div className="mr-1">
+							<Link to="/admin/add-product">
+								<ButtonSurface text="+ New Product" />
+							</Link>
+						</div>
+						{toggleDelete ? (
+							<ButtonColor color="danger" text="delete selected" onClick={handleDeleteBtn} />
+						) : (
+							<ButtonColor color="danger" icon="bi bi-trash" onClick={() => setToggleDelete((prev) => !prev)} />
+						)}
+					</div>
 				</div>
 			</div>
 			<AdminTable
 				pagination={true}
 				columnData={columnData}
-				rowData={rowData}
+				rowData={products}
 				editIndex={editIndex}
-				// firstEvent={openEditStock}
 				firstIcon="bi bi-pencil-square"
 				secondIcon="bi bi-trash"
-				// secondEvent={handleOnChange}
-				// thirdEvent={handleSaveBtn}
+				firstToggle={toggleDelete}
+				firstEvent={handleCheck}
 			/>
 		</div>
 	);

@@ -14,6 +14,29 @@ import axios from "axios";
 import { apiUrl_admin, apiUrl_transaction } from "../../helpers";
 import Swal from "sweetalert2";
 
+const deleteMultipleProduct = (payload) => {
+	return async (dispatch) => {
+		try {
+			console.log(payload);
+			const data = {
+				indexes: payload,
+			};
+			dispatch({ type: NULLIFY_ERROR });
+			dispatch({ type: API_LOADING_START });
+			await axios.patch(`${apiUrl_admin}/products`, data);
+			await dispatch(getProductsAdmin());
+			Swal.fire({
+				icon: "success",
+				title: "Successfully delete product",
+			});
+			dispatch({ type: API_LOADING_SUCCESS });
+		} catch (err) {
+			if (!err.response) return dispatch({ type: API_LOADING_ERROR });
+			dispatch({ type: API_LOADING_ERROR, payload: err.response.data.message });
+		}
+	};
+};
+
 const addNewProduct = (payload) => {
 	return async (dispatch) => {
 		try {
@@ -33,12 +56,12 @@ const addNewProduct = (payload) => {
 			console.log(payload.files);
 			await axios.post(`${apiUrl_admin}/products`, form, headers);
 			console.log("eaea21");
-			dispatch({ type: API_LOADING_SUCCESS });
 			dispatch(getProductsAdmin());
-			return Swal.fire({
+			Swal.fire({
 				icon: "success",
 				title: "Successfully add product",
 			});
+			dispatch({ type: API_LOADING_SUCCESS });
 		} catch (err) {
 			if (!err.response) return dispatch({ type: API_LOADING_ERROR });
 			dispatch({ type: API_LOADING_ERROR, payload: err.response.data.message });
@@ -199,6 +222,7 @@ const kirimBarang = (payload) => {
 };
 
 export {
+	deleteMultipleProduct,
 	getProductsAdmin,
 	getDashboard,
 	monitoringAction,

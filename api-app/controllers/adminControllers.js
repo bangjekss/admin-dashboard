@@ -15,6 +15,36 @@ const {
 	category,
 } = require("../models");
 
+const deleteMultipleProduct = async (req, res, next) => {
+	try {
+		console.log(req.body);
+		await product.destroy({
+			where: {
+				id: {
+					[Op.in]: req.body.indexes,
+				},
+			},
+		});
+		await inventory.destroy({
+			where: {
+				product_id: {
+					[Op.in]: req.body.indexes,
+				},
+			},
+		});
+		await productImage.destroy({
+			where: {
+				product_id: {
+					[Op.in]: req.body.indexes,
+				},
+			},
+		});
+		return res.status(200).send("delete");
+	} catch (err) {
+		next(err);
+	}
+};
+
 const addProduct = async (req, res, next) => {
 	try {
 		const path = "/products";
@@ -402,6 +432,7 @@ const kirimBarang = async (req, res, next) => {
 };
 
 module.exports = {
+	deleteMultipleProduct,
 	addProduct,
 	getCategoriesAndWarehouse,
 	getProducts,
