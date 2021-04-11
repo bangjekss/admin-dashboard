@@ -1,5 +1,5 @@
-**/.eslintcache
-**/node_modules
-**/package-lock.json
-**/.env
-**/.eslintcache
+.eslintcache
+.env
+node_modules
+package-lock.json
+api-app/public/*
