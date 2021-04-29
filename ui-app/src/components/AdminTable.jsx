@@ -38,18 +38,20 @@ function AdminTable({
 	productId,
 	firstToggle,
 }) {
-	const styles = useStyles();
-	const [page, setPage] = useState(0);
-	const [limit, setLimit] = useState(10);
+	// const styles = useStyles();
+	// const [page, setPage] = useState(0);
+	// const [limit, setLimit] = useState(10);
 
-	const handleChangePage = (event, newPage) => {
-		setPage(newPage);
-	};
+	// const handleChangePage = (event, newPage) => {
+	// 	setPage(newPage);
+	// };
 
-	const handleChangeLimit = (event) => {
-		setLimit(event.target.value);
-		setPage(0);
-	};
+	// const handleChangeLimit = (event) => {
+	// 	setLimit(event.target.value);
+	// 	setPage(0);
+	// };
+
+	const [outStock, setOutStock] = useState(false);
 
 	if (firstToggle) {
 		return (
@@ -99,17 +101,21 @@ function AdminTable({
 										<TableCell align="right">
 											<div>{row.price.toLocaleString()}</div>
 										</TableCell>
-										<TableCell>
+										<TableCell align="right">
 											<div>{row.inventory[0].stock}</div>
 										</TableCell>
-										<TableCell>
+										<TableCell align="right">
 											<div>{row.inventory[1].stock}</div>
 										</TableCell>
-										<TableCell>
+										<TableCell align="right">
 											<div>{row.inventory[2].stock}</div>
 										</TableCell>
 										<TableCell>
 											<ButtonAccent text="Edit" px={10} py={5} fontSize={12} />
+											{/* {row.inventory.forEach((value) => {
+												if (value.stock === 0) setOutStock(true);
+											})} */}
+											{/* {outStock ? <i class="bi bi-exclamation-triangle"></i> : null} */}
 											{/* <div className="d-flex justify-content-center"> */}
 											{/* <ButtonColor color="danger" icon="bi bi-trash" px={10} py={5} fontSize={12} /> */}
 											{/* </div> */}
@@ -139,8 +145,12 @@ function AdminTable({
 					</TableHead>
 					<TableBody>
 						{rowData.map((row) => {
+							const nullStock = [];
+							row.inventory.forEach((value) => {
+								if (value.stock === 0) nullStock.push(value);
+							});
 							return (
-								<TableRow>
+								<TableRow style={{ opacity: nullStock.length === row.inventory.length ? 0.5 : 1 }}>
 									<TableCell>
 										<img
 											src={`${apiUrl}${row.image[0].imagepath}`}
@@ -162,17 +172,21 @@ function AdminTable({
 									<TableCell align="right">
 										<div>{row.price.toLocaleString()}</div>
 									</TableCell>
-									<TableCell>
+									<TableCell align="right">
 										<div>{row.inventory[0].stock}</div>
 									</TableCell>
-									<TableCell>
+									<TableCell align="right">
 										<div>{row.inventory[1].stock}</div>
 									</TableCell>
-									<TableCell>
+									<TableCell align="right">
 										<div>{row.inventory[2].stock}</div>
 									</TableCell>
 									<TableCell>
 										<ButtonAccent text="Edit" px={10} py={5} fontSize={12} />
+										{/* {row.inventory.forEach((value) => {
+											if (value.stock === 0) setOutStock(true);
+										})} */}
+										{/* {outStock ? <i class="bi bi-exclamation-triangle"></i> : null} */}
 										{/* <div className="d-flex justify-content-center"> */}
 										{/* <ButtonColor color="danger" icon="bi bi-trash" px={10} py={5} fontSize={12} /> */}
 										{/* </div> */}

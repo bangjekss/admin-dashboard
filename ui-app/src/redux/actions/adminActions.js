@@ -69,7 +69,7 @@ const addNewProduct = (payload) => {
 	};
 };
 
-const getProductsAdmin = (limit = 10, currentPage = 1) => {
+const getProductsAdmin = (limit = 4, currentPage = 1) => {
 	return async (dispatch) => {
 		try {
 			dispatch({ type: NULLIFY_ERROR });
