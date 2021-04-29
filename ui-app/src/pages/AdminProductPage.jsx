@@ -1,8 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link } from "react-router-dom";
+import { Link, useLocation } from "react-router-dom";
 import Swal from "sweetalert2";
-import { ButtonAccent, ButtonSurface, InputGroupIcon, LoaderPage, AdminTable, ButtonColor } from "../components";
+import {
+	ButtonAccent,
+	ButtonSurface,
+	InputGroupIcon,
+	LoaderPage,
+	AdminTable,
+	ButtonColor,
+	Pagination,
+} from "../components";
 import { apiUrl } from "../helpers";
 import { getProductsAdmin, deleteMultipleProduct } from "../redux/actions";
 
@@ -89,24 +97,39 @@ const columnData = [
 		maxWidth: 0,
 	},
 ];
+const limit = 4;
 
-const AdminProductPage = () => {
+const AdminProductPage = (props) => {
 	const dispatch = useDispatch();
-	const { products, isLoading } = useSelector((state) => state.adminReducer);
+	const { products, totalProducts } = useSelector((state) => state.adminReducer.products);
+
+	const { isLoading } = useSelector((state) => state.adminReducer);
 	const isLoadingAuth = useSelector((state) => state.authReducer.isLoading);
-	const [rowData, setRowData] = useState([]);
 	const [toggleDelete, setToggleDelete] = useState(false);
 	const [editIndex, setEditIndex] = useState([]);
-	const [inventory, setInventory] = useState([]);
 	const [check, setCheck] = useState([]);
+	const [page, setPage] = useState(null);
+	const [changePage, setChangePage] = useState(false);
 
 	useEffect(() => {
-		dispatch(getProductsAdmin());
+		const pageQuery = parseInt(new URLSearchParams(props.location.search).get("page"));
+		setPage(pageQuery);
+		dispatch(getProductsAdmin(limit, pageQuery));
 	}, []);
+
+	useEffect(() => {
+		const pageQuery = parseInt(new URLSearchParams(props.location.search).get("page"));
+		setPage(pageQuery);
+		dispatch(getProductsAdmin(limit, pageQuery));
+	}, [changePage]);
 
 	if (!products) return <LoaderPage />;
 	if (isLoading) return <LoaderPage />;
 	if (isLoadingAuth) return <LoaderPage />;
+
+	const handleChangePage = () => {
+		setChangePage((prev) => !prev);
+	};
 
 	const handleCheck = (e, productId) => {
 		console.log(e.target.checked, productId);
@@ -118,9 +141,8 @@ const AdminProductPage = () => {
 			updateCheck.splice(idx, 1);
 		}
 		setCheck(updateCheck);
-		console.log(check);
 	};
-	console.log(check);
+
 	const handleDeleteBtn = () => {
 		Swal.fire({
 			title: "Are you sure?",
@@ -131,12 +153,23 @@ const AdminProductPage = () => {
 			cancelButtonColor: "#d33",
 			confirmButtonText: "Yes, delete it!",
 		}).then((result) => {
+			const pageQuery = new URLSearchParams(props.location.search).get("page");
+			const payload = {
+				check,
+				pageQuery,
+				limit,
+			};
 			if (result.isConfirmed) {
-				dispatch(deleteMultipleProduct(check));
+				dispatch(deleteMultipleProduct(payload));
 			}
 		});
 		setToggleDelete((prev) => !prev);
 		setCheck([]);
+	};
+
+	const handleOnChangePage = () => {
+		const currentPage = new URLSearchParams(props.location.search).get("page");
+		setPage(parseInt(currentPage));
 	};
 
 	return (
@@ -170,7 +203,6 @@ const AdminProductPage = () => {
 				</div>
 			</div>
 			<AdminTable
-				pagination={true}
 				columnData={columnData}
 				rowData={products}
 				editIndex={editIndex}
@@ -179,6 +211,16 @@ const AdminProductPage = () => {
 				firstToggle={toggleDelete}
 				firstEvent={handleCheck}
 			/>
+			<div className="mt-5">
+				<Pagination
+					limit={limit}
+					total={totalProducts}
+					neighbours={1}
+					curPage={page}
+					firstEvent={handleOnChangePage}
+					secondEvent={handleChangePage}
+				/>
+			</div>
 		</div>
 	);
 };

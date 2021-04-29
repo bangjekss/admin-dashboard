@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { Route } from "react-router-dom";
+import { Route, Switch } from "react-router-dom";
 import "./App.css";
 import {
 	LoginPage,
@@ -16,31 +16,47 @@ import { AdminSidebar, Header, LoaderPage } from "./components";
 
 const App = () => {
 	const dispatch = useDispatch();
-	const { isLogin } = useSelector((state) => state.authReducer);
+	const { isLogin, isLoading } = useSelector((state) => state.authReducer);
 
 	useEffect(() => {
 		dispatch(keepLoginAction());
 	}, []);
 
+	if (!isLogin) {
+		if (isLoading) {
+			return (
+				<>
+					<Route component={LoaderPage} />
+				</>
+			);
+		}
+		return (
+			<>
+				<Route component={LoginPage} />
+			</>
+		);
+	}
+
 	return (
-		<div>
-			<Route component={Header} />
-			<Route path="/" component={LoginPage} />
+		<>
 			<div style={{ display: isLogin ? "block" : "none" }}>
-				<div className="d-flex justify-content-between" style={{ minHeight: "100vh" }}>
-					<div>
-						<Route component={AdminSidebar} />
-					</div>
-					<div style={{ width: "100%" }}>
+				<Route component={Header} />
+			</div>
+			<div className="d-flex justify-content-between" style={{ minHeight: "100vh" }}>
+				<div>
+					<Route component={AdminSidebar} />
+				</div>
+				<div style={{ width: "100%" }}>
+					<Switch>
 						<Route path="/admin/dashboard" component={AdminDashboard} />
 						<Route path="/admin/products" component={AdminProductPage} />
 						<Route path="/admin/add-product" component={NewProductPage} />
 						<Route path="/admin/transactions" component={AdminTransactionPage} />
 						<Route path="/admin/profile" component={ProfileAdminPage} />
-					</div>
+					</Switch>
 				</div>
 			</div>
-		</div>
+		</>
 	);
 };
 

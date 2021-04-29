@@ -223,7 +223,7 @@ const NewProductPage = () => {
 	};
 
 	console.log(isFinished);
-	if (isFinished) return <Redirect to="/admin/products" />;
+	if (isFinished) return <Redirect to="/admin/products?page=1" />;
 
 	return (
 		<div className={styles.container}>

@@ -22,7 +22,7 @@ const AdminDashboard = ({ current }) => {
 	if (isLoading) return <LoaderPage />;
 	if (isLoadingAuth) return <LoaderPage />;
 	if (!dailyReport) return <LoaderPage />;
-	// if (!isLogin) return <Redirect to="/" />;
+	if (!isLogin) return <Redirect to="/" />;
 
 	return (
 		<div

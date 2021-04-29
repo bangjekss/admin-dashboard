@@ -22,7 +22,7 @@ import Swal from "sweetalert2";
 const Header = () => {
 	const dispatch = useDispatch();
 	const styles = useStyles();
-	const { username, isLogin } = useSelector((state) => state.authReducer);
+	const { username } = useSelector((state) => state.authReducer);
 
 	const [showSearchInput, setShowSearchInput] = useState(false);
 
@@ -42,8 +42,6 @@ const Header = () => {
 			}
 		});
 	};
-
-	// if (!isLogin) return <Redirect to="/" />;
 
 	return (
 		<div className={styles.containerAdmin}>

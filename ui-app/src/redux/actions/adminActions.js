@@ -18,13 +18,13 @@ const deleteMultipleProduct = (payload) => {
 	return async (dispatch) => {
 		try {
 			console.log(payload);
-			const data = {
-				indexes: payload,
-			};
+			// const data = {
+			// 	indexes: payload,
+			// };
 			dispatch({ type: NULLIFY_ERROR });
 			dispatch({ type: API_LOADING_START });
-			await axios.patch(`${apiUrl_admin}/products`, data);
-			await dispatch(getProductsAdmin());
+			await axios.patch(`${apiUrl_admin}/products`, payload);
+			await dispatch(getProductsAdmin(payload.limit, payload.pageQuery));
 			Swal.fire({
 				icon: "success",
 				title: "Successfully delete product",
@@ -69,12 +69,16 @@ const addNewProduct = (payload) => {
 	};
 };
 
-const getProductsAdmin = () => {
+const getProductsAdmin = (limit = 10, currentPage = 1) => {
 	return async (dispatch) => {
 		try {
 			dispatch({ type: NULLIFY_ERROR });
 			dispatch({ type: API_LOADING_START });
-			const response = await axios.get(`${apiUrl_admin}/products`);
+			const payload = {
+				limit,
+				currentPage,
+			};
+			const response = await axios.put(`${apiUrl_admin}/products`, payload);
 			dispatch({ type: GET_PRODUCTS, payload: response.data });
 			dispatch({ type: API_LOADING_SUCCESS });
 		} catch (err) {

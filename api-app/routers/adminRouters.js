@@ -14,7 +14,7 @@ const { getDashboard } = require("../controllers/adminControllers");
 
 router.get("/dashboard", getDashboard);
 router.post("/products", addProduct);
-router.get("/products", getProducts);
+router.put("/products", getProducts);
 router.patch("/products", deleteMultipleProduct);
 router.get("/product-categories-and-warehouse", getCategoriesAndWarehouse);
 router.get("/sent-package", sentPackage);

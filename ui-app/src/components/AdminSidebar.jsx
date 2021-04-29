@@ -11,7 +11,7 @@ import Swal from "sweetalert2";
 
 const menusSideBar = [
 	{ icon: "bi bi-house", value: "Dashboard", link: "/admin/dashboard" },
-	{ icon: "bi bi-hdd", value: "Products", link: "/admin/products" },
+	{ icon: "bi bi-hdd", value: "Products", link: "/admin/products?page=1" },
 	{
 		icon: "bi bi-journal-text",
 		value: "Transactions",
@@ -52,7 +52,7 @@ const AdminSidebar = () => {
 		});
 	};
 
-	// if (!isLogin) return <Redirect to="/" />;
+	// if (!isLogin) return <Redirect to="/auth" />;
 
 	const renderMenuSideBar = () => {
 		return menusSideBar.map((menu, index) => {
@@ -69,7 +69,7 @@ const AdminSidebar = () => {
 		return AuthMenuSideBar.map((menu, index) => {
 			if (menu.value === "Logout")
 				return (
-					<div className={styles.menuListItem} onClick={handleLogoutBtn}>
+					<div className={styles.menuListItem} onClick={handleLogoutBtn} key={menu.value}>
 						<i className={menu.icon} style={{ fontSize: 20, marginRight: 15 }}></i>
 						<div style={{ fontSize: 15 }}>{menu.value}</div>
 					</div>

@@ -21,21 +21,21 @@ const deleteMultipleProduct = async (req, res, next) => {
 		await product.destroy({
 			where: {
 				id: {
-					[Op.in]: req.body.indexes,
+					[Op.in]: req.body.check,
 				},
 			},
 		});
 		await inventory.destroy({
 			where: {
 				product_id: {
-					[Op.in]: req.body.indexes,
+					[Op.in]: req.body.check,
 				},
 			},
 		});
 		await productImage.destroy({
 			where: {
 				product_id: {
-					[Op.in]: req.body.indexes,
+					[Op.in]: req.body.check,
 				},
 			},
 		});
@@ -97,9 +97,13 @@ const getCategoriesAndWarehouse = async (req, res, next) => {
 
 const getProducts = async (req, res, next) => {
 	try {
-		console.log(req.body);
+		// console.log(req.body);
+		console.log("ea");
+		const limit = parseInt(req.body.limit);
+		const offset = parseInt(req.body.currentPage) * limit - limit;
 		let query = {
-			// raw: true,
+			offset,
+			limit: parseInt(req.body.limit),
 			where: {
 				is_available: 1,
 			},
@@ -142,6 +146,7 @@ const getProducts = async (req, res, next) => {
 			],
 		};
 		const getProducts = await product.findAll(query);
+		const productsLength = await product.findAll();
 		const productImg = await productImage.findAll();
 		const getInventory = await inventory.findAll();
 		const productsGetImageAndStock = getProducts.map((value) => {
@@ -159,7 +164,11 @@ const getProducts = async (req, res, next) => {
 				}),
 			};
 		});
-		return res.status(200).send(productsGetImageAndStock);
+		const response = {
+			totalProducts: productsLength.length,
+			products: productsGetImageAndStock,
+		};
+		return res.status(200).send(response);
 	} catch (err) {
 		next(err);
 	}

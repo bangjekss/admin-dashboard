@@ -5,7 +5,7 @@ import { accentColor, primaryColor, surfaceColor } from "../helpers";
 import { loginAction } from "../redux/actions";
 import { Link, Redirect } from "react-router-dom";
 import Swal from "sweetalert2";
-import { ButtonAccent, ButtonSurface, InputForm, InputGroupIcon, InputToolTip } from "../components";
+import { ButtonAccent, ButtonSurface, InputForm, InputGroupIcon, InputToolTip, LoaderPage } from "../components";
 
 const LoginPage = () => {
 	const dispatch = useDispatch();
@@ -29,6 +29,7 @@ const LoginPage = () => {
 		dispatch(loginAction(payload));
 	};
 
+	// if (isLoading) return <LoaderPage />;
 	if (isLogin) return <Redirect to="/admin/dashboard" />;
 
 	return (

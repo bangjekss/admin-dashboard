@@ -16,7 +16,8 @@ const INITIAL_STATE = {
 	isError: false,
 	errorMessage: false,
 	dashboard: {},
-	products: [],
+	products: {},
+	changePage: false,
 	monitoring: [],
 	transactionData: [],
 	warehouse: [],
@@ -76,6 +77,13 @@ const adminReducer = (state = INITIAL_STATE, action) => {
 				...state,
 				categories: action.payload,
 			};
+
+		case "CHANGE_PAGE":
+			return {
+				...state,
+				changePage: !state.changePage,
+			};
+
 		default:
 			return state;
 	}

@@ -71,10 +71,18 @@ function AdminTable({
 								return (
 									<TableRow>
 										<TableCell align="center">
-											<input type="checkbox" onClick={(e) => firstEvent(e, row.id)} id={row.id} />
+											<input
+												type="checkbox"
+												onClick={(e) => firstEvent(e, row.id)}
+												id={row.id}
+												style={{ cursor: "pointer" }}
+											/>
 										</TableCell>
 										<TableCell>
-											<img src={`${apiUrl}${row.image[0].imagepath}`} style={{ width: 75, height: 75 }} />
+											<img
+												src={`${apiUrl}${row.image[0].imagepath}`}
+												style={{ width: 75, height: 75, objectFit: "contain" }}
+											/>
 										</TableCell>
 										<TableCell>
 											<div>{row.name}</div>
@@ -112,7 +120,6 @@ function AdminTable({
 						</TableBody>
 					</Table>
 				</TableContainer>
-				{pagination ? <Pagination limit={10} total={100} neighbours={2} /> : null}
 			</div>
 		);
 	}
@@ -135,7 +142,10 @@ function AdminTable({
 							return (
 								<TableRow>
 									<TableCell>
-										<img src={`${apiUrl}${row.image[0].imagepath}`} style={{ width: 75, height: 75 }} />
+										<img
+											src={`${apiUrl}${row.image[0].imagepath}`}
+											style={{ width: 75, height: 75, objectFit: "contain" }}
+										/>
 									</TableCell>
 									<TableCell>
 										<div>{row.name}</div>
@@ -173,7 +183,6 @@ function AdminTable({
 					</TableBody>
 				</Table>
 			</TableContainer>
-			{pagination ? <Pagination limit={10} total={100} neighbours={2} /> : null}
 		</div>
 	);
 }
