@@ -9,18 +9,65 @@ import {
 	GET_ADMIN_PRODUCTS,
 	GET_WAREHOUSE,
 	GET_PRODUCTS,
+	GET_CATEGORIES,
 } from "../types";
 import axios from "axios";
 import { apiUrl_admin, apiUrl_transaction } from "../../helpers";
 import Swal from "sweetalert2";
 
+const addNewCategoryAction = (newCategory) => {
+	return async (dispatch) => {
+		try {
+			dispatch({ type: NULLIFY_ERROR });
+			dispatch({ type: API_LOADING_START });
+			await axios.post(`${apiUrl_admin}/add-new-category`, { newCategory });
+			dispatch({ type: API_LOADING_SUCCESS });
+			dispatch(getCategories());
+			Swal.fire({
+				icon: "success",
+				title: `Successfully add '${newCategory}' as category`,
+			});
+		} catch (err) {
+			if (!err.response) return dispatch({ type: API_LOADING_ERROR });
+			dispatch({ type: API_LOADING_ERROR, payload: err.response.data.message });
+		}
+	};
+};
+
+const getCategories = () => {
+	return async (dispatch) => {
+		try {
+			dispatch({ type: NULLIFY_ERROR });
+			dispatch({ type: API_LOADING_START });
+			const response = await axios.get(`${apiUrl_admin}/categories`);
+			dispatch({ type: API_LOADING_SUCCESS });
+			dispatch({ type: GET_CATEGORIES, payload: response.data });
+		} catch (err) {
+			if (!err.response) return dispatch({ type: API_LOADING_ERROR });
+			dispatch({ type: API_LOADING_ERROR, payload: err.response.data.message });
+		}
+	};
+};
+
+const getWarehouses = () => {
+	return async (dispatch) => {
+		try {
+			dispatch({ type: NULLIFY_ERROR });
+			dispatch({ type: API_LOADING_START });
+			const response = await axios.get(`${apiUrl_admin}/warehouses`);
+			dispatch({ type: API_LOADING_SUCCESS });
+			dispatch({ type: GET_WAREHOUSE, payload: response.data });
+		} catch (err) {
+			if (!err.response) return dispatch({ type: API_LOADING_ERROR });
+			dispatch({ type: API_LOADING_ERROR, payload: err.response.data.message });
+		}
+	};
+};
+
 const deleteMultipleProduct = (payload) => {
 	return async (dispatch) => {
 		try {
 			console.log(payload);
-			// const data = {
-			// 	indexes: payload,
-			// };
 			dispatch({ type: NULLIFY_ERROR });
 			dispatch({ type: API_LOADING_START });
 			await axios.patch(`${apiUrl_admin}/products`, payload);
@@ -235,4 +282,7 @@ export {
 	rejectBukti,
 	kirimBarang,
 	addNewProduct,
+	addNewCategoryAction,
+	getCategories,
+	getWarehouses,
 };

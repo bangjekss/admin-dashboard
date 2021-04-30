@@ -15,6 +15,42 @@ const {
 	category,
 } = require("../models");
 
+const newCategory = async (req, res, next) => {
+	try {
+		console.log("ea");
+		await category.create({
+			category: req.body.newCategory,
+		});
+		return res.status(200).send("add new Category");
+	} catch (err) {
+		next(err);
+	}
+};
+
+const getCategories = async (req, res, next) => {
+	try {
+		const response = await category.findAll();
+		const categories = response.map((value) => {
+			return {
+				value: value.id,
+				label: value.category,
+			};
+		});
+		return res.status(200).send(categories);
+	} catch (err) {
+		next(err);
+	}
+};
+
+const getWarehouses = async (req, res, next) => {
+	try {
+		const response = await warehouse.findAll();
+		return res.status(200).send(response);
+	} catch (err) {
+		next(err);
+	}
+};
+
 const deleteMultipleProduct = async (req, res, next) => {
 	try {
 		console.log(req.body);
@@ -450,4 +486,7 @@ module.exports = {
 	approveBukti,
 	rejectBukti,
 	kirimBarang,
+	newCategory,
+	getCategories,
+	getWarehouses,
 };

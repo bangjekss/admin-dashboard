@@ -13,6 +13,7 @@ import AdminTable from "./AdminTable";
 import ProcessTransactionModal from "./ProcessTransactionModal";
 import DetailTransactionModal from "./DetailTransactionModal";
 import Pagination from "./Pagination";
+import CustomModal from "./CustomModal";
 
 export {
 	Header,
@@ -30,4 +31,5 @@ export {
 	ProcessTransactionModal,
 	DetailTransactionModal,
 	Pagination,
+	CustomModal,
 };

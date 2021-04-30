@@ -9,6 +9,7 @@ import {
 	NULLIFY_ERROR,
 	GET_WAREHOUSE,
 	GET_PRODUCTS,
+	GET_CATEGORIES,
 } from "../types";
 
 const INITIAL_STATE = {
@@ -17,11 +18,11 @@ const INITIAL_STATE = {
 	errorMessage: false,
 	dashboard: {},
 	products: {},
+	productCategories: [],
 	changePage: false,
 	monitoring: [],
 	transactionData: [],
-	warehouse: [],
-	categories: [],
+	warehouses: [],
 	Warehouse1: null,
 	Warehouse2: null,
 	Warehouse3: null,
@@ -75,15 +76,18 @@ const adminReducer = (state = INITIAL_STATE, action) => {
 		case GET_WAREHOUSE:
 			return {
 				...state,
-				categories: action.payload,
+				warehouses: action.payload,
 			};
-
+		case GET_CATEGORIES:
+			return {
+				...state,
+				productCategories: action.payload,
+			};
 		case "CHANGE_PAGE":
 			return {
 				...state,
 				changePage: !state.changePage,
 			};
-
 		default:
 			return state;
 	}

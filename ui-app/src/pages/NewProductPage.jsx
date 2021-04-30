@@ -1,22 +1,41 @@
 import { makeStyles } from "@material-ui/styles";
 import axios from "axios";
-import React, { useEffect, useState } from "react";
-import { useDispatch } from "react-redux";
+import React, { useEffect, useLayoutEffect, useRef, useState } from "react";
+import { useDispatch, useSelector } from "react-redux";
 import { Redirect } from "react-router";
 import Swal from "sweetalert2";
 import { product_default } from "../assets";
-import { ButtonColor, ButtonPrimary, ButtonSurface, InputForm, InputSelect } from "../components";
-import ButtonAccent from "../components/ButtonColor";
+import {
+	ButtonColor,
+	ButtonPrimary,
+	ButtonSurface,
+	CustomModal,
+	InputForm,
+	InputSelect,
+	LoaderPage,
+} from "../components";
 import { apiUrl_admin, secondSurfaceColor, surfaceColor } from "../helpers";
-import { addNewProduct } from "../redux/actions";
+import { addNewProduct, addNewCategoryAction, getCategories, getWarehouses } from "../redux/actions";
+
+// const useComponentWillMount = (func) => {
+// 	const willMount = useRef(true);
+// 	if (willMount.current) {
+// 		func();
+// 	}
+// 	useComponentDidMount(() => {
+// 		willMount.current = false;
+// 	});
+// };
 
 const NewProductPage = () => {
 	const dispatch = useDispatch();
 	const styles = useStyles();
+	const { productCategories, warehouses } = useSelector((state) => state.adminReducer);
+
 	const [files, setFiles] = useState([]);
 	const [images, setImages] = useState([]);
-	const [categories, setCategories] = useState([]);
-	const [warehouse, setWarehouse] = useState([]);
+	// const [categories, setCategories] = useState([]);
+	// const [warehouse, setWarehouse] = useState([]);
 	const [category, setCategory] = useState(null);
 	const [name, setName] = useState(null);
 	const [description, setDescription] = useState(null);
@@ -24,18 +43,25 @@ const NewProductPage = () => {
 	const [price, setPrice] = useState(null);
 	const [stock, setStock] = useState([]);
 	const [isFinished, setIsFinished] = useState(null);
+	const [isAddCategory, setIsAddCategory] = useState(false);
+	const [openAddCategory, setOpenAddCategory] = useState(false);
+	const [newCategory, setNewCategory] = useState("");
 
 	useEffect(async () => {
-		const response = await axios.get(`${apiUrl_admin}/product-categories-and-warehouse`);
-		setCategories(response.data.categories);
-		setWarehouse(response.data.warehouse);
-		setIsFinished(false);
-		// let inv = [];
-		// response.data.warehouse.forEach((value) => {
-		// 	inv.push({ stock: null, warehouseId: value.id });
-		// });
-		// setStock(inv);
+		dispatch(getWarehouses());
+		dispatch(getCategories());
 	}, []);
+
+	// console.log(warehouses);
+	// useComponentWillMount(() => {
+	// });
+
+	// useEffect(async () => {
+	// 	const response = await axios.get(`${apiUrl_admin}/product-categories-and-warehouse`);
+	// 	setCategories(response.data.categories);
+	// 	setWarehouse(response.data.warehouse);
+	// 	setIsFinished(false);
+	// }, [isAddCategory]);
 
 	useEffect(() => {
 		const maxItems = 5;
@@ -114,9 +140,6 @@ const NewProductPage = () => {
 		dispatch(addNewProduct(payload));
 		setIsFinished(true);
 	};
-
-	console.log(images);
-	console.log(files);
 
 	const renderImages = () => {
 		const dummy = [0, 1, 2, 3, 4];
@@ -205,7 +228,7 @@ const NewProductPage = () => {
 	};
 
 	const renderInventory = () => {
-		return warehouse.map((value, index) => {
+		return warehouses.map((value, index) => {
 			return (
 				<div key={value.id} className="d-flex justify-content-between mb-1 align-items-center">
 					<InputForm
@@ -222,11 +245,27 @@ const NewProductPage = () => {
 		});
 	};
 
-	console.log(isFinished);
-	if (isFinished) return <Redirect to="/admin/products?page=1" />;
+	const handleAddNewCategory = () => {
+		dispatch(addNewCategoryAction(newCategory));
+		setIsAddCategory((prev) => !prev);
+	};
 
+	console.log(productCategories);
+	console.log(warehouses);
+
+	// if (productCategories.length === 0) return <LoaderPage />;
+	if (isFinished) return <Redirect to="/admin/products?page=1" />;
 	return (
 		<div className={styles.container}>
+			<div>
+				<CustomModal
+					isOpen={openAddCategory}
+					toggleEvent={() => setOpenAddCategory((prev) => !prev)}
+					title="Add New Category"
+					firstEvent={(e) => setNewCategory(e.target.value)}
+					secondEvent={handleAddNewCategory}
+				/>
+			</div>
 			<div>
 				<div className="d-flex justify-content-between">{renderImages(images)}</div>
 			</div>
@@ -237,9 +276,16 @@ const NewProductPage = () => {
 				<div>
 					<div className="d-flex justify-content-between mb-2 align-items-center">
 						<div>Category</div>
-						<ButtonPrimary text="+ add category" fontSize={12} px={5} py={2} fontColor={"gray"} />
+						<ButtonPrimary
+							text="+ add category"
+							fontSize={12}
+							px={5}
+							py={2}
+							fontColor={"gray"}
+							onClick={() => setOpenAddCategory((prev) => !prev)}
+						/>
 					</div>
-					<InputSelect options={categories} placeholder="select category" onChange={(e) => setCategory(e)} />
+					<InputSelect options={productCategories} placeholder="select category" onChange={(e) => setCategory(e)} />
 				</div>
 				<div>
 					<InputForm label="Name" mt={30} placeholder="product name" onChange={(e) => setName(e.target.value)} />
